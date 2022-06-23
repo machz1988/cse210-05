@@ -1,8 +1,8 @@
 import constants
-from game.scripting.control_cycle1_action import ControlCycle1Action
+from game.scripting.action import Action
 from game.shared.point import Point
 
-class ControlCycle2Action(ControlCycle1Action):
+class ControlCycle2Action(Action):
     """
     An input action that controls the cycles.
 
@@ -19,7 +19,8 @@ class ControlCycle2Action(ControlCycle1Action):
             keyboard_service (KeyboardService): An instance of KeyboardService.
         """
         self._keyboard_service = keyboard_service
-        self._direction = Point(constants.CELL_SIZE, 0)
+        #self._direction = Point(constants.CELL_SIZE, 0)
+        self._direction = Point(0, -constants.CELL_SIZE)
 
     def execute(self, cast, script):
         """Executes the control actors action.
