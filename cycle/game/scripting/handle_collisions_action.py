@@ -1,7 +1,11 @@
+from itertools import cycle
+from re import T
 import constants
 from game.casting.actor import Actor
 from game.scripting.action import Action
 from game.shared.point import Point
+#from game.services.video_service import VideoService
+from threading import Timer
 
 class HandleCollisionsAction(Action):
     """
@@ -14,9 +18,13 @@ class HandleCollisionsAction(Action):
         _is_game_over (boolean): Whether or not the game is over.
     """
 
-    def __init__(self):
+    def __init__(self, video_service):
         """Constructs a new HandleCollisionsAction."""
         self._is_game_over = False
+        self._cycle1_wins = False
+        self._cycle2_wins = False
+        self._video_service = video_service
+        
 
     def execute(self, cast, script):
         """Executes the handle collisions action.
@@ -25,10 +33,114 @@ class HandleCollisionsAction(Action):
             cast (Cast): The cast of Actors in the game.
             script (Script): The script of Actions in the game.
         """
-        if not self._is_game_over:
+
+        # if not self._is_game_over:
+        if self._video_service.is_window_open():
+            self._handle_cycle_collision(cast)
             self._handle_segment_collision(cast)
-            self._handle_game_over(cast)
+            self._handle_game_over(cast, script)
+       
+
+    def _handle_cycle_collision(self, cast):
+        cycle1 = cast.get_first_actor("cycle1")
+        cycle2 = cast.get_first_actor("cycle2")
+        head1 = cycle1.get_segments()[0]
+        segments1 = cycle1.get_segments()[1:]
+        head2 = cycle2.get_segments()[0]
+        segments2 = cycle2.get_segments()[1:]
+        score1 = cast.get_first_actor("score1")
+        score2 = cast.get_first_actor("score2")
+
+        for segment1 in segments1:
+            if head2.get_position().equals(segment1.get_position()):
+                self._cycle1_wins = True
+                self._is_game_over = True
+                score1.add_points(1)
+
+        for segment2 in segments2:
+            if head1.get_position().equals(segment2.get_position()):
+                self._cycle2_wins = True
+                self._is_game_over = True
+                score2.add_points(1)
     
+    def _handle_segment_collision(self, cast):
+        """Sets the game over flag if the cycle collides with one of its segments.
+        
+        Args:
+            cast (Cast): The cast of Actors in the game.
+        """
+        cycle1 = cast.get_first_actor("cycle1")
+        head1 = cycle1.get_segments()[0]
+        segments1 = cycle1.get_segments()[1:]
+        cycle2 = cast.get_first_actor("cycle2")
+        head2 = cycle2.get_segments()[0]
+        segments2 = cycle2.get_segments()[1:]
+        
+        for segment1 in segments1:
+            if head1.get_position().equals(segment1.get_position()):
+                self._is_game_over = True
+                self._cycle2_wins = True
+        for segment2 in segments2:
+            if head2.get_position().equals(segment2.get_position()):
+                self._is_game_over = True
+                self._cycle1_wins = True
+
+    def _reset(self, cast, script):
+        self._is_game_over = False
+        # cycle1 = cast.get_first_actor("cycle1")
+        # segments1 = cycle1.get_segments()
+        # cycle2 = cast.get_first_actor("cycle2")
+        # segments2 = cycle2.get_segments()
+        # for segment1 in segments1:
+        #     segment1.set_color(constants.RED)
+        # for segment2 in segments2:
+        #     segment2.set_color(constants.GREEN)
+        #self._video_service.flush_buffer()
+        #script.add_action("output", DrawActorsAction(video_service))
+        #self._execute_actions("output", cast, script)
+        daas = script.get_actions("output")
+        for daa in daas:
+            daa.execute(cast, script)
+
+    def _handle_game_over(self, cast, script):
+        """Shows the 'game over' message and turns the cycles white if the game is over.
+        
+        Args:
+            cast (Cast): The cast of Actors in the game.
+        """
+        score1 = cast.get_first_actor("score1")
+        score2 = cast.get_first_actor("score2")
+        if self._is_game_over:
+            cycle1 = cast.get_first_actor("cycle1")
+            segments1 = cycle1.get_segments()
+            cycle2 = cast.get_first_actor("cycle2")
+            segments2 = cycle2.get_segments()
+
+            x = int(constants.MAX_X / 2)
+            y = int(constants.MAX_Y / 2)
+            position = Point(x, y)
+
+            message = Actor()
+            if self._cycle1_wins:
+                message.set_text(f"{score1.get_player()} Wins! Game Over! {score1.get_points()}")
+            else:
+                message.set_text(f"{score2.get_player()} Wins! Game Over! {score2.get_points()}")
+            message.set_position(position)
+            cast.add_actor("messages", message)
+
+            for segment1 in segments1:
+                segment1.set_color(constants.WHITE)
+            for segment2 in segments2:
+                segment2.set_color(constants.WHITE)
+            
+            t = Timer(5, self._reset(cast, script))
+            t.start()
+            
+
+
+            
+
+   
     def _handle_segment_collision(self, cast):
         """Sets the game over flag if the cycle collides with one of its segments.
         
@@ -48,29 +160,3 @@ class HandleCollisionsAction(Action):
         for segment2 in segments2:
             if head2.get_position().equals(segment2.get_position()):
                 self._is_game_over = True
-
-    def _handle_game_over(self, cast):
-        """Shows the 'game over' message and turns the cycles white if the game is over.
-        
-        Args:
-            cast (Cast): The cast of Actors in the game.
-        """
-        if self._is_game_over:
-            cycle1 = cast.get_first_actor("cycle1")
-            segments1 = cycle1.get_segments()
-            cycle2 = cast.get_first_actor("cycle2")
-            segments2 = cycle2.get_segments()
-
-            x = int(constants.MAX_X / 2)
-            y = int(constants.MAX_Y / 2)
-            position = Point(x, y)
-
-            message = Actor()
-            message.set_text("Game Over!")
-            message.set_position(position)
-            cast.add_actor("messages", message)
-
-            for segment1 in segments1:
-                segment1.set_color(constants.WHITE)
-            for segment2 in segments2:
-                segment2.set_color(constants.WHITE)
