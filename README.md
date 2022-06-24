@@ -18,7 +18,7 @@ Cycle is played according to the following rules:
 ## Interface
 
 ---
-<img src="images/cycle-screenshot.png" width="500">
+<img src="images/cycle-screenshot.png" width="830">
 
 ---
 ## Getting Started
