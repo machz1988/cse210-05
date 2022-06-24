@@ -1,16 +1,14 @@
-from itertools import cycle
-from re import T
 import constants
+
 from game.casting.actor import Actor
 from game.scripting.action import Action
 from game.shared.point import Point
-#from game.services.video_service import VideoService
-from threading import Timer
+
 
 class HandleCollisionsAction(Action):
     """
     An update action that handles interactions between the actors.
-    
+
     The responsibility of HandleCollisionsAction is to handle the situation when the cycles collides
     with the each other, or the cycle collides with its segments, or the game is over.
 
@@ -24,7 +22,6 @@ class HandleCollisionsAction(Action):
         self._cycle1_wins = False
         self._cycle2_wins = False
         self._video_service = video_service
-        
 
     def execute(self, cast, script):
         """Executes the handle collisions action.
@@ -34,12 +31,10 @@ class HandleCollisionsAction(Action):
             script (Script): The script of Actions in the game.
         """
 
-        # if not self._is_game_over:
-        if self._video_service.is_window_open():
+        if not self._is_game_over:
             self._handle_cycle_collision(cast)
             self._handle_segment_collision(cast)
             self._handle_game_over(cast, script)
-       
 
     def _handle_cycle_collision(self, cast):
         cycle1 = cast.get_first_actor("cycle1")
@@ -62,10 +57,10 @@ class HandleCollisionsAction(Action):
                 self._cycle2_wins = True
                 self._is_game_over = True
                 score2.add_points(1)
-    
+
     def _handle_segment_collision(self, cast):
         """Sets the game over flag if the cycle collides with one of its segments.
-        
+
         Args:
             cast (Cast): The cast of Actors in the game.
         """
@@ -75,7 +70,7 @@ class HandleCollisionsAction(Action):
         cycle2 = cast.get_first_actor("cycle2")
         head2 = cycle2.get_segments()[0]
         segments2 = cycle2.get_segments()[1:]
-        
+
         for segment1 in segments1:
             if head1.get_position().equals(segment1.get_position()):
                 self._is_game_over = True
@@ -85,26 +80,9 @@ class HandleCollisionsAction(Action):
                 self._is_game_over = True
                 self._cycle1_wins = True
 
-    def _reset(self, cast, script):
-        self._is_game_over = False
-        # cycle1 = cast.get_first_actor("cycle1")
-        # segments1 = cycle1.get_segments()
-        # cycle2 = cast.get_first_actor("cycle2")
-        # segments2 = cycle2.get_segments()
-        # for segment1 in segments1:
-        #     segment1.set_color(constants.RED)
-        # for segment2 in segments2:
-        #     segment2.set_color(constants.GREEN)
-        #self._video_service.flush_buffer()
-        #script.add_action("output", DrawActorsAction(video_service))
-        #self._execute_actions("output", cast, script)
-        daas = script.get_actions("output")
-        for daa in daas:
-            daa.execute(cast, script)
-
     def _handle_game_over(self, cast, script):
         """Shows the 'game over' message and turns the cycles white if the game is over.
-        
+
         Args:
             cast (Cast): The cast of Actors in the game.
         """
@@ -132,18 +110,10 @@ class HandleCollisionsAction(Action):
                 segment1.set_color(constants.WHITE)
             for segment2 in segments2:
                 segment2.set_color(constants.WHITE)
-            
-            t = Timer(5, self._reset(cast, script))
-            t.start()
-            
 
-
-            
-
-   
     def _handle_segment_collision(self, cast):
         """Sets the game over flag if the cycle collides with one of its segments.
-        
+
         Args:
             cast (Cast): The cast of Actors in the game.
         """
@@ -153,7 +123,7 @@ class HandleCollisionsAction(Action):
         cycle2 = cast.get_first_actor("cycle2")
         head2 = cycle2.get_segments()[0]
         segments2 = cycle2.get_segments()[1:]
-        
+
         for segment1 in segments1:
             if head1.get_position().equals(segment1.get_position()):
                 self._is_game_over = True

@@ -15,7 +15,6 @@ class Cycle(Actor):
     def __init__(self, position, colorcycle):
         super().__init__()
         self._segments = []
-        #self._cycle_num = 1
         self._prepare_body(position, colorcycle)
 
     def get_segments(self):
@@ -37,24 +36,20 @@ class Cycle(Actor):
 
     def turn_head(self, velocity):
         self._segments[0].set_velocity(velocity)
-    
+
     def _prepare_body(self, position, colorcycle):
         x = position.get_x()
         y = position.get_y()
 
         for i in range(constants.CYCLE_LENGTH):
-            #position = Point(x - i * constants.CELL_SIZE, y)
             position = Point(x, y + i * constants.CELL_SIZE)
-            
-            #velocity = Point(1 * constants.CELL_SIZE, 0)
             velocity = Point(0, -1 * constants.CELL_SIZE)
             text = "@" if i == 0 else "#"
             color=colorcycle
-            
+
             segment = Actor()
             segment.set_position(position)
             segment.set_velocity(velocity)
             segment.set_text(text)
             segment.set_color(color)
             self._segments.append(segment)
-        #self._cycle_num += 1
