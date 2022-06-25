@@ -34,8 +34,12 @@ class HandleCollisionsAction(Action):
             script (Script): The script of Actions in the game.
         """
 
-        # if not self._is_game_over:
-        if self._video_service.is_window_open():
+        
+        # if self._video_service.is_window_open():
+        #     self._handle_cycle_collision(cast)
+        #     self._handle_segment_collision(cast)
+        #     self._handle_game_over(cast, script)
+        if not self._is_game_over:
             self._handle_cycle_collision(cast)
             self._handle_segment_collision(cast)
             self._handle_game_over(cast, script)
@@ -75,32 +79,25 @@ class HandleCollisionsAction(Action):
         cycle2 = cast.get_first_actor("cycle2")
         head2 = cycle2.get_segments()[0]
         segments2 = cycle2.get_segments()[1:]
+        score1 = cast.get_first_actor("score1")
+        score2 = cast.get_first_actor("score2")
         
         for segment1 in segments1:
             if head1.get_position().equals(segment1.get_position()):
                 self._is_game_over = True
                 self._cycle2_wins = True
+                score2.add_points(1)
         for segment2 in segments2:
             if head2.get_position().equals(segment2.get_position()):
                 self._is_game_over = True
                 self._cycle1_wins = True
+                score1.add_points(1)
 
-    def _reset(self, cast, script):
-        self._is_game_over = False
-        # cycle1 = cast.get_first_actor("cycle1")
-        # segments1 = cycle1.get_segments()
-        # cycle2 = cast.get_first_actor("cycle2")
-        # segments2 = cycle2.get_segments()
-        # for segment1 in segments1:
-        #     segment1.set_color(constants.RED)
-        # for segment2 in segments2:
-        #     segment2.set_color(constants.GREEN)
-        #self._video_service.flush_buffer()
-        #script.add_action("output", DrawActorsAction(video_service))
-        #self._execute_actions("output", cast, script)
-        daas = script.get_actions("output")
-        for daa in daas:
-            daa.execute(cast, script)
+    # def _reset(self, cast, script):
+    #     self._is_game_over = False
+    #     daas = script.get_actions("output")
+    #     for daa in daas:
+    #         daa.execute(cast, script)
 
     def _handle_game_over(self, cast, script):
         """Shows the 'game over' message and turns the cycles white if the game is over.
@@ -122,9 +119,11 @@ class HandleCollisionsAction(Action):
 
             message = Actor()
             if self._cycle1_wins:
-                message.set_text(f"{score1.get_player()} Wins! Game Over! {score1.get_points()}")
+                message.set_text(f"{score1.get_player()} wins this round!")
+                self._cycle1_wins = False
             else:
-                message.set_text(f"{score2.get_player()} Wins! Game Over! {score2.get_points()}")
+                message.set_text(f"{score2.get_player()} wins this round!")
+                self._cycle2_wins = False
             message.set_position(position)
             cast.add_actor("messages", message)
 
@@ -133,30 +132,18 @@ class HandleCollisionsAction(Action):
             for segment2 in segments2:
                 segment2.set_color(constants.WHITE)
             
-            t = Timer(5, self._reset(cast, script))
-            t.start()
+            my_script = script.get_actions("output")[0]
+            control1 = script.get_actions("input")[0]
+            control2 = script.get_actions("input")[1]
+            control1.set_direction(Point(0, -constants.CELL_SIZE))
+            control2.set_direction(Point(0, -constants.CELL_SIZE))
+            self._is_game_over = False
             
+            #my_script.execute(cast, script)
+            my_script.reset(cast, script)
 
-
-            
-
-   
-    def _handle_segment_collision(self, cast):
-        """Sets the game over flag if the cycle collides with one of its segments.
-        
-        Args:
-            cast (Cast): The cast of Actors in the game.
-        """
-        cycle1 = cast.get_first_actor("cycle1")
-        head1 = cycle1.get_segments()[0]
-        segments1 = cycle1.get_segments()[1:]
-        cycle2 = cast.get_first_actor("cycle2")
-        head2 = cycle2.get_segments()[0]
-        segments2 = cycle2.get_segments()[1:]
-        
-        for segment1 in segments1:
-            if head1.get_position().equals(segment1.get_position()):
-                self._is_game_over = True
-        for segment2 in segments2:
-            if head2.get_position().equals(segment2.get_position()):
-                self._is_game_over = True
+        #     daas = script.get_actions("output")
+        # for daa in daas:
+        #     daa.execute(cast, script)
+            #t = Timer(5, self._reset(cast, script))
+            #t.start()
