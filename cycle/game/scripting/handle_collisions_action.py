@@ -86,7 +86,7 @@ class HandleCollisionsAction(Action):
                 score1.add_points(1)
 
     def _handle_game_over(self, cast, script):
-        """Shows the 'game over' message and turns the cycles white if the game is over.
+        """Shows who won this round message and turns the cycles white if it have a winer of this round.
 
         Args:
             cast (Cast): The cast of Actors in the game.

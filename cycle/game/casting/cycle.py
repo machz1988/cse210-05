@@ -53,7 +53,6 @@ class Cycle(Actor):
             segment.set_text(text)
             segment.set_color(color)
             self._segments.append(segment)
-        #self._cycle_num += 1
 
     def grow_tail(self, number_of_segments):
         for i in range(number_of_segments):
@@ -67,5 +66,5 @@ class Cycle(Actor):
             segment.set_text("#")
             segment.set_color(color)
             segment.set_velocity(velocity)
-            #segment.set_image(constants.TAIL_IMAGE, 0)
             segment.set_position(position)
+            self._segments.append(segment)

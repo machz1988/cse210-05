@@ -23,11 +23,14 @@ class DrawActorsAction(Action):
         self._video_service = video_service
 
     def reset(self, cast, script):
+        """Resets the initial position of the cycles for a new round.
+
+        Args:
+            cast (Cast): The cast of Actors in the game.
+            script (Script): The script of Actions in the game.
+        """
         self.execute(cast, script)
         pyray.wait_time(5000)
-    #     script.add_action("input", ControlCycle1Action(keyboard_service))
-    # script.add_action("input", ControlCycle2Action(keyboard_service))
-        #control1 = script
         cycle1 = cast.get_first_actor("cycle1")
         cycle2 = cast.get_first_actor("cycle2")
         cast.remove_actor("cycle1", cycle1)
