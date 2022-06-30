@@ -8,6 +8,7 @@ from game.scripting.control_cycle1_action import ControlCycle1Action
 from game.scripting.control_cycle2_action import ControlCycle2Action
 from game.scripting.move_actors_action import MoveActorsAction
 from game.scripting.handle_collisions_action import HandleCollisionsAction
+from game.scripting.trail_growth_action import TrailGrowthAction
 from game.scripting.draw_actors_action import DrawActorsAction
 from game.directing.director import Director
 from game.services.keyboard_service import KeyboardService
@@ -42,6 +43,7 @@ def main():
     script.add_action("input", ControlCycle2Action(keyboard_service))
     script.add_action("update", MoveActorsAction())
     script.add_action("update", HandleCollisionsAction(video_service))
+    script.add_action("update", TrailGrowthAction())
     script.add_action("output", DrawActorsAction(video_service))
 
     director = Director(video_service)

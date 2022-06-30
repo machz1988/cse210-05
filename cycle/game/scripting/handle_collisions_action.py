@@ -70,15 +70,20 @@ class HandleCollisionsAction(Action):
         cycle2 = cast.get_first_actor("cycle2")
         head2 = cycle2.get_segments()[0]
         segments2 = cycle2.get_segments()[1:]
-
+        
+        score1 = cast.get_first_actor("score1")
+        score2 = cast.get_first_actor("score2")
+        
         for segment1 in segments1:
             if head1.get_position().equals(segment1.get_position()):
                 self._is_game_over = True
                 self._cycle2_wins = True
+                score2.add_points(1)
         for segment2 in segments2:
             if head2.get_position().equals(segment2.get_position()):
                 self._is_game_over = True
                 self._cycle1_wins = True
+                score1.add_points(1)
 
     def _handle_game_over(self, cast, script):
         """Shows the 'game over' message and turns the cycles white if the game is over.
@@ -100,9 +105,11 @@ class HandleCollisionsAction(Action):
 
             message = Actor()
             if self._cycle1_wins:
-                message.set_text(f"{score1.get_player()} Wins! Game Over! {score1.get_points()}")
+                message.set_text(f"{score1.get_player()} wins this round!")
+                self._cycle1_wins = False
             else:
-                message.set_text(f"{score2.get_player()} Wins! Game Over! {score2.get_points()}")
+                message.set_text(f"{score2.get_player()} wins this round!")
+                self._cycle2_wins = False
             message.set_position(position)
             cast.add_actor("messages", message)
 
@@ -110,6 +117,15 @@ class HandleCollisionsAction(Action):
                 segment1.set_color(constants.WHITE)
             for segment2 in segments2:
                 segment2.set_color(constants.WHITE)
+            
+            my_script = script.get_actions("output")[0]
+            control1 = script.get_actions("input")[0]
+            control2 = script.get_actions("input")[1]
+            control1.set_direction(Point(0, -constants.CELL_SIZE))
+            control2.set_direction(Point(0, -constants.CELL_SIZE))
+            self._is_game_over = False
+            
+            my_script.reset(cast, script)
 
     def _handle_segment_collision(self, cast):
         """Sets the game over flag if the cycle collides with one of its segments.

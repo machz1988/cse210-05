@@ -14,9 +14,13 @@ class Score(Actor):
     """
     def __init__(self, player):
         super().__init__()
-        self._points = 1000
+        self._points = 0
         self._player = player
+        #self._is_playing = True
         self.add_points(0)
+
+    # def get_game_state(self):
+    #     return self._is_playing
 
     def get_text(self):
         return f"{self._player}: {self._points}"

@@ -11,7 +11,7 @@ class Cast:
     def __init__(self):
         """Constructs a new Actor."""
         self._actors = {}
-
+   
     def add_actor(self, group, actor):
         """Adds an actor to the given group.
 

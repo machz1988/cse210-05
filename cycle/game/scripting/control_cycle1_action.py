@@ -21,6 +21,10 @@ class ControlCycle1Action(Action):
         """
         self._keyboard_service = keyboard_service
         self._direction = Point(0, -constants.CELL_SIZE)
+        #self._direction = Point(0, 0)
+
+    def set_direction(self, direction):
+        self._direction = direction
 
     def execute(self, cast, script):
         """Executes the control actors action.
