@@ -13,7 +13,6 @@ from game.scripting.draw_actors_action import DrawActorsAction
 from game.directing.director import Director
 from game.services.keyboard_service import KeyboardService
 from game.services.video_service import VideoService
-from game.shared.color import Color
 from game.shared.point import Point
 
 
@@ -34,7 +33,7 @@ def main():
     score2 = Score("Player 2")
     score2.set_position(aux_position)
     cast.add_actor("score2", score2)
-   
+
     # start the game
     keyboard_service = KeyboardService()
     video_service = VideoService()
@@ -49,7 +48,6 @@ def main():
 
     director = Director(video_service)
     director.start_game(cast, script)
-
 
 if __name__ == "__main__":
     main()

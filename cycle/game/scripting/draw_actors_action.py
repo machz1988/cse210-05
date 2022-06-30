@@ -7,7 +7,7 @@ import pyray
 class DrawActorsAction(Action):
     """
     An output action that draws all the actors.
-    
+
     The responsibility of DrawActorsAction is to draw all the actors.
 
     Attributes:
@@ -16,7 +16,7 @@ class DrawActorsAction(Action):
 
     def __init__(self, video_service):
         """Constructs a new DrawActorsAction using the specified VideoService.
-        
+
         Args:
             video_service (VideoService): An instance of VideoService.
         """

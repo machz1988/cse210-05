@@ -14,12 +14,11 @@ class ControlCycle2Action(Action):
 
     def __init__(self, keyboard_service):
         """Constructs a new ControlActorsAction using the specified KeyboardService.
-        
+
         Args:
             keyboard_service (KeyboardService): An instance of KeyboardService.
         """
         self._keyboard_service = keyboard_service
-        #self._direction = Point(constants.CELL_SIZE, 0)
         self._direction = Point(0, -constants.CELL_SIZE)
     
     def set_direction(self, direction):
@@ -35,18 +34,18 @@ class ControlCycle2Action(Action):
         # left
         if self._keyboard_service.is_key_down('j'):
             self._direction = Point(-constants.CELL_SIZE, 0)
-        
+
         # right
         if self._keyboard_service.is_key_down('l'):
             self._direction = Point(constants.CELL_SIZE, 0)
-        
+
         # up
         if self._keyboard_service.is_key_down('i'):
             self._direction = Point(0, -constants.CELL_SIZE)
-        
+
         # down
         if self._keyboard_service.is_key_down('k'):
             self._direction = Point(0, constants.CELL_SIZE)
-        
+
         cycle2 = cast.get_first_actor("cycle2")
         cycle2.turn_head(self._direction)

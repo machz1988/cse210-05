@@ -9,7 +9,7 @@ class VideoService:
 
     def __init__(self, debug = False):
         """Constructs a new VideoService using the specified debug mode.
-        
+
         Args:
             debug (bool): whether or not to draw in debug mode.
         """
@@ -27,7 +27,7 @@ class VideoService:
         pyray.clear_background(pyray.BLACK)
         if self._debug == True:
             self._draw_grid()
-    
+
     def draw_actor(self, actor, centered=False):
         """Draws the given actor's text on the screen.
 
@@ -44,9 +44,9 @@ class VideoService:
             width = pyray.measure_text(text, font_size)
             offset = int(width / 2)
             x -= offset
-            
+
         pyray.draw_text(text, x, y, font_size, color)
-        
+
     def draw_actors(self, actors, centered=False):
         """Draws the text for the given list of actors on the screen.
 
@@ -55,7 +55,7 @@ class VideoService:
         """ 
         for actor in actors:
             self.draw_actor(actor, centered)
-    
+
     def flush_buffer(self):
         """Copies the buffer contents to the screen. This method should be called at the end of
         the game's output phase.
@@ -83,10 +83,10 @@ class VideoService:
         """Draws a grid on the screen."""
         for y in range(0, constants.MAX_Y, constants.CELL_SIZE):
             pyray.draw_line(0, y, constants.MAX_X, y, pyray.GRAY)
-            
+
         for x in range(0, constants.MAX_X, constants.CELL_SIZE):
             pyray.draw_line(x, 0, x, constants.MAX_Y, pyray.GRAY)
-    
+
     def _get_x_offset(self, text, font_size):
         width = pyray.measure_text(text, font_size)
         return int(width / 2)

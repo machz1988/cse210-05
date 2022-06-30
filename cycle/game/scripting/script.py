@@ -11,23 +11,23 @@ class Script:
     def __init__(self):
         """Constructs a new Action."""
         self._actions = {}
-        
+
     def add_action(self, group, action):
         """Adds an action to the given group.
-        
+
         Args:
             group (string): The name of the group.
             action (Action): The action to add.
         """
         if not group in self._actions.keys():
             self._actions[group] = []
-            
+
         if not action in self._actions[group]:
             self._actions[group].append(action)
 
     def get_actions(self, group):
         """Gets the actions in the given group.
-        
+
         Args:
             group (string): The name of the group.
 
@@ -38,10 +38,10 @@ class Script:
         if group in self._actions.keys():
             results = self._actions[group].copy()
         return results
-    
+
     def remove_action(self, group, action):
         """Removes an action from the given group.
-        
+
         Args:
             group (string): The name of the group.
             action (Action): The action to remove.
